@@ -1,216 +1,239 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <title>CampusFlow — Academic Collaboration</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     :root{
-      --bg:#0f172a; /* slate-900 */
-      --panel:#111827; /* gray-900 */
-      --card:#1f2937; /* gray-800 */
-      --muted:#9ca3af; /* gray-400 */
-      --text:#f9fafb; /* gray-50 */
-      --accent:#22c55e; /* green-500 */
-      --accent-2:#6366f1; /* indigo-500 */
-      --danger:#ef4444; /* red-500 */
-      --warn:#f59e0b; /* amber-500 */
-      --primary:#0ea5e9; /* sky-500 */
-      --border:#374151;
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --muted:#93a4b7;
+      --text:#f8fafc;
+      --accent:#22c55e;
+      --accent-2:#6366f1;
+      --danger:#ef4444;
+      --warn:#f59e0b;
+      --primary:#0ea5e9;
+      --border:#334155;
+      --shadow:rgba(0,0,0,0.45);
+    }
+    [data-theme="light"]{
+      --bg:#f5f7fb;
+      --panel:#ffffff;
+      --card:#ffffff;
+      --muted:#64748b;
+      --text:#0f172a;
+      --accent:#16a34a;
+      --accent-2:#4f46e5;
+      --danger:#dc2626;
+      --warn:#d97706;
+      --primary:#0284c7;
+      --border:#e2e8f0;
+      --shadow:rgba(0,0,0,0.08);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      background:linear-gradient(180deg, #0b1223 0%, #0f172a 100%);
+      background:var(--bg);
       color:var(--text);
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
     a{color:var(--primary);text-decoration:none}
-    .app{
-      display:grid;
-      grid-template-rows:auto 1fr;
+    .app{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+    /* LOGIN */
+    #loginPage{
+      display:flex;align-items:center;justify-content:center;
       min-height:100vh;
+      background:linear-gradient(135deg, rgba(79,70,229,0.25), rgba(34,197,94,0.15));
+      padding:24px;
     }
+    .login-box{
+      width:100%;max-width:420px;background:var(--panel);
+      border:1px solid var(--border);border-radius:16px;padding:24px;
+      box-shadow:0 12px 36px var(--shadow);animation:fadeIn .5s ease;
+    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .brand{
+      display:flex;align-items:center;gap:10px;margin-bottom:16px;font-weight:800
+    }
+    .brand .mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;
+      background:linear-gradient(135deg,var(--accent-2),var(--accent));box-shadow:0 8px 24px rgba(99,102,241,0.35)}
+    .login-box h2{margin:8px 0 18px 0}
+    .row{display:flex;gap:8px;margin-bottom:10px}
+    input,select{
+      width:100%;padding:12px;border-radius:12px;border:1px solid var(--border);
+      background:var(--card);color:var(--text);font-size:14px
+    }
+    button{
+      padding:10px 12px;border:none;border-radius:12px;cursor:pointer;font-weight:600
+    }
+    .btn-primary{background:var(--accent-2);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .helper{font-size:13px;color:var(--muted);margin-top:10px}
+    .sep{height:1px;background:var(--border);margin:16px 0}
+    /* TOP BAR */
     header{
       position:sticky;top:0;z-index:10;
       backdrop-filter:saturate(1.2) blur(8px);
-      background:rgba(17,24,39,0.85);
+      background:var(--panel);
       border-bottom:1px solid var(--border);
     }
     .topbar{
-      display:flex;align-items:center;gap:12px;
-      padding:12px 16px;
+      display:flex;align-items:center;gap:12px;padding:12px 16px
     }
-    .logo{
-      display:flex;align-items:center;gap:10px;
-      font-weight:700;letter-spacing:0.2px;
-    }
-    .logo .mark{
-      width:28px;height:28px;border-radius:8px;
-      background:linear-gradient(135deg,var(--accent-2),var(--accent));
-      display:grid;place-items:center;color:white;font-weight:800;
-      box-shadow:0 6px 18px rgba(99,102,241,0.35);
-    }
-    .invite{
-      margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
-    }
+    .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+    .logo .mark{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;
+      background:linear-gradient(135deg,var(--accent-2),var(--accent));box-shadow:0 6px 18px rgba(99,102,241,0.35)}
+    .invite{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .pill{
       background:rgba(99,102,241,0.12);
-      color:#c7d2fe;border:1px dashed rgba(99,102,241,0.35);
-      padding:8px 10px;border-radius:999px;font-size:12px;
+      color:inherit;border:1px dashed var(--border);
+      padding:8px 10px;border-radius:999px;font-size:12px
     }
-    .btn{
-      background:var(--accent-2);color:white;border:none;
-      padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;
+    .toolbar{display:flex;align-items:center;gap:8px}
+    .icon-btn{
+      border:1px solid var(--border);background:var(--card);
+      color:var(--text);border-radius:10px;padding:8px;cursor:pointer
     }
-    .btn.secondary{background:var(--accent);color:#052e1a}
-    .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
-    nav.tabs{
-      display:flex;gap:8px;padding:8px 16px;overflow:auto;
-      border-top:1px solid var(--border);
-    }
+    .notif-dot{width:8px;height:8px;background:var(--danger);border-radius:50%;display:inline-block;margin-left:6px}
+    /* TABS */
+    nav.tabs{display:flex;gap:8px;padding:8px 16px;overflow:auto;border-top:1px solid var(--border)}
     .tab{
-      padding:10px 12px;border-radius:10px;cursor:pointer;
-      background:transparent;border:1px solid var(--border);color:var(--text);
-      white-space:nowrap;
+      padding:10px 12px;border-radius:10px;cursor:pointer;background:transparent;
+      border:1px solid var(--border);color:var(--text);white-space:nowrap
     }
     .tab.active{background:var(--card);border-color:var(--primary);box-shadow:0 0 0 2px rgba(14,165,233,0.25) inset}
-    main{
-      padding:16px;max-width:1200px;margin:0 auto;width:100%;
-    }
-    .grid{
-      display:grid;gap:12px;
-    }
-    /* Responsive columns */
-    .grid.cards{
-      grid-template-columns:1fr;
-    }
-    @media(min-width:768px){
-      .grid.cards{grid-template-columns:repeat(2,1fr)}
-    }
-    @media(min-width:1024px){
-      .grid.cards{grid-template-columns:repeat(3,1fr)}
-    }
+    main{padding:16px;max-width:1200px;margin:0 auto;width:100%}
+    /* CARDS + GRID */
+    .grid{display:grid;gap:12px}
+    .grid.cards{grid-template-columns:1fr}
+    @media(min-width:768px){.grid.cards{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){.grid.cards{grid-template-columns:repeat(3,1fr)}}
     .card{
-      background:linear-gradient(180deg, rgba(31,41,55,0.9), rgba(24,33,46,0.9));
-      border:1px solid var(--border);
-      border-radius:14px;padding:14px;position:relative;
+      background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:14px;position:relative;
+      box-shadow:0 8px 28px var(--shadow)
     }
     .card h3{margin:0 0 8px 0;font-size:16px}
     .card .sub{color:var(--muted);font-size:12px;margin-top:-2px}
-    .kpi{
-      display:flex;gap:10px;align-items:center;margin-top:6px
-    }
-    .kpi .dot{width:8px;height:8px;border-radius:50%}
-    .kpi .value{font-weight:700}
-    .progress{
-      height:10px;border-radius:999px;background:#0b1223;border:1px solid var(--border);
-      overflow:hidden;margin-top:8px;
-    }
-    .progress .bar{
-      height:100%;background:linear-gradient(90deg,var(--accent),#34d399);
-      width:0%;transition:width .3s ease;border-right:1px solid rgba(0,0,0,0.2);
-    }
-    .list{
-      display:flex;flex-direction:column;gap:8px;margin-top:8px;
-    }
+    .progress{height:10px;border-radius:999px;background:rgba(2,6,23,0.06);border:1px solid var(--border);overflow:hidden;margin-top:8px}
+    .progress .bar{height:100%;background:linear-gradient(90deg,var(--accent),#34d399);width:0%;transition:width .3s ease;border-right:1px solid rgba(0,0,0,0.1)}
+    .list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
     .item{
-      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
-      gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:rgba(2,6,23,0.6);
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;
+      padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--card)
     }
     .item .title{font-weight:600}
     .item .meta{color:var(--muted);font-size:12px}
     .item .actions{display:flex;gap:6px}
-    .chk{
-      width:18px;height:18px;border:2px solid var(--muted);border-radius:6px;display:grid;place-items:center;cursor:pointer;
-    }
-    .chk.done{background:var(--accent);border-color:var(--accent)}
-    .badge{
-      padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.04)
-    }
-    .badge.warn{color:#fde68a;border-color:#fde68a;background:rgba(245,158,11,0.1)}
-    .badge.danger{color:#fecaca;border-color:#fecaca;background:rgba(239,68,68,0.1)}
-    .badge.ok{color:#d1fae5;border-color:#d1fae5;background:rgba(34,197,94,0.08)}
-    .notice{
-      display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border);border-radius:12px;background:rgba(31,41,55,0.6)
-    }
+    .chk{width:18px;height:18px;border:2px solid var(--muted);border-radius:6px;display:grid;place-items:center;cursor:pointer}
+    .chk.done{background:var(--accent);border-color:var(--accent);color:#052e1a}
+    .badge{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.04)}
+    .badge.warn{color:#fde68a;border-color:#fde68a;background:rgba(245,158,11,0.12)}
+    .badge.danger{color:#fecaca;border-color:#fecaca;background:rgba(239,68,68,0.12)}
+    .badge.ok{color:#d1fae5;border-color:#d1fae5;background:rgba(34,197,94,0.12)}
+    .notice{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--card)}
     .pin{color:#fde68a}
-    .notice .summary{color:#cbd5e1;font-size:13px}
-    .searchbar{
-      display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:12px
-    }
-    input,select{
-      background:rgba(2,6,23,0.6);color:var(--text);
-      border:1px solid var(--border);border-radius:10px;padding:10px;font-size:14px;
-    }
-    .faculty{
-      display:grid;gap:12px;grid-template-columns:1fr;
-    }
-    @media(min-width:600px){
-      .faculty{grid-template-columns:repeat(2,1fr)}
-    }
-    @media(min-width:900px){
-      .faculty{grid-template-columns:repeat(3,1fr)}
-    }
+    .searchbar{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;margin-bottom:12px}
+    .faculty{display:grid;gap:12px;grid-template-columns:1fr}
+    @media(min-width:600px){.faculty{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:900px){.faculty{grid-template-columns:repeat(3,1fr)}}
     .fac-card{
       display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;
-      background:rgba(31,41,55,0.8);border:1px solid var(--border);border-radius:12px;padding:10px;
+      background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px
     }
     .avatar{
       width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#334155,#1f2937);
-      display:grid;place-items:center;font-weight:800;color:#cbd5e1;
+      display:grid;place-items:center;font-weight:800;color:#cbd5e1
     }
-    .cal{
-      display:grid;gap:8px
-    }
-    .cal .head{
-      display:flex;justify-content:space-between;align-items:center
-    }
-    .cal-grid{
-      display:grid;grid-template-columns:repeat(7,1fr);gap:6px
-    }
-    .cal-day{
-      border:1px solid var(--border);border-radius:10px;padding:10px;background:rgba(2,6,23,0.5);
-      min-height:72px;position:relative
-    }
+    .cal{display:grid;gap:8px}
+    .cal .head{display:flex;justify-content:space-between;align-items:center}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .cal-day{border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--card);min-height:72px;position:relative}
     .cal-day .num{position:absolute;top:6px;left:8px;font-size:12px;color:var(--muted)}
     .cal-day .tag{position:absolute;bottom:6px;left:6px;right:6px}
     .empty{opacity:0.25}
-    .helper{
-      border:1px solid var(--border);border-radius:12px;padding:10px;background:rgba(31,41,55,0.6)
-    }
-    .chat{
-      display:grid;grid-template-rows:1fr auto;gap:8px;height:300px
-    }
-    .chat-log{
-      overflow:auto;border:1px solid var(--border);border-radius:12px;padding:10px;background:rgba(2,6,23,0.6)
-    }
+    .helper{border:1px solid var(--border);border-radius:12px;padding:10px;background:var(--card)}
+    .chat{display:grid;grid-template-rows:1fr auto;gap:8px;height:320px}
+    .chat-log{overflow:auto;border:1px solid var(--border);border-radius:12px;padding:10px;background:var(--card)}
     .msg{margin-bottom:8px}
     .msg .who{font-size:12px;color:var(--muted)}
-    .msg .text{background:rgba(31,41,55,0.8);display:inline-block;padding:8px 10px;border-radius:10px;margin-top:4px}
-    .chat-input{
-      display:grid;grid-template-columns:1fr auto;gap:8px
-    }
-    footer{
-      padding:16px;color:var(--muted);text-align:center
-    }
+    .msg .text{background:var(--panel);display:inline-block;padding:8px 10px;border-radius:10px;margin-top:4px}
+    .chat-input{display:grid;grid-template-columns:1fr auto;gap:8px}
+    footer{padding:16px;color:var(--muted);text-align:center}
     .inline-icon{opacity:0.9}
+    /* PROFILE */
+    .profile-grid{display:grid;gap:12px}
+    .profile-card{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center}
+    .streak{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .streak .badge{background:linear-gradient(135deg, rgba(99,102,241,0.12), rgba(34,197,94,0.12))}
+    /* Theme toggle switch */
+    .switch{
+      position:relative;width:46px;height:26px;background:var(--card);border:1px solid var(--border);border-radius:999px;cursor:pointer
+    }
+    .knob{
+      position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:999px;background:var(--accent-2);transition:left .2s ease
+    }
+    [data-theme="light"] .knob{left:22px;background:var(--accent)}
   </style>
 </head>
 <body>
-  <div class="app">
+  <!-- LOGIN PAGE -->
+  <div id="loginPage">
+    <div class="login-box">
+      <div class="brand"><div class="mark">CF</div>CampusFlow</div>
+      <h2>Welcome back</h2>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="College email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <div class="row">
+          <select id="courseSelect" required>
+            <option value="">Select course</option>
+            <option>B.Tech Computer Science</option>
+            <option>BCA</option>
+            <option>MBA</option>
+          </select>
+          <select id="sectionSelect" required>
+            <option value="">Section</option>
+            <option>A</option><option>B</option><option>C</option>
+          </select>
+        </div>
+        <button class="btn-primary" type="submit">Login</button>
+      </form>
+      <div class="helper">By continuing you join your course + section group. Invite link is auto-generated.</div>
+      <div class="sep"></div>
+      <div class="row" style="align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="switch" id="themeSwitch" title="Toggle theme">
+            <div class="knob"></div>
+          </div>
+          <span class="helper">Theme</span>
+        </div>
+        <button class="btn-ghost" id="skipLogin">Explore demo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div class="app" id="appRoot" style="display:none">
     <header>
       <div class="topbar">
         <div class="logo">
           <div class="mark">CF</div>
           CampusFlow
-          <span class="sub" style="font-weight:500;color:#9ca3af">Structured alternative to WhatsApp groups</span>
+          <span class="sub" style="font-weight:500;color:var(--muted)">Structured alternative to WhatsApp groups</span>
         </div>
         <div class="invite">
-          <span class="pill">Group: B.Tech CS • Section A</span>
-          <button class="btn" id="copyInvite">Copy invite link</button>
-          <button class="btn ghost" id="switchGroup">Switch group</button>
+          <span class="pill" id="groupPill">Group: —</span>
+          <button class="btn-ghost icon-btn" id="copyInvite" title="Copy invite link">🔗</button>
+          <button class="icon-btn" id="switchGroup" title="Switch group">🔄</button>
+        </div>
+        <div class="toolbar">
+          <button class="icon-btn" id="notifBtn" title="Notifications">🔔 <span class="notif-dot" id="notifDot" style="display:none"></span></button>
+          <button class="icon-btn" id="themeBtn" title="Toggle theme">🌓</button>
+          <button class="icon-btn" id="profileBtn" title="Profile">👤</button>
         </div>
       </div>
       <nav class="tabs" id="tabs">
@@ -220,6 +243,8 @@
         <button class="tab" data-view="faculty">Faculty</button>
         <button class="tab" data-view="calendar">Calendar</button>
         <button class="tab" data-view="chatbot">AI assistant</button>
+        <button class="tab" data-view="profile">Profile</button>
+        <button class="tab" data-view="settings">Settings</button>
       </nav>
     </header>
 
@@ -231,12 +256,6 @@
             <h3>Pending assignments</h3>
             <div class="sub">Your tasks across all subjects</div>
             <div class="progress"><div class="bar" id="overallProgress"></div></div>
-            <div class="kpi">
-              <span class="dot" style="background:var(--accent)"></span>
-              <span class="value" id="pendingCount">0</span> pending
-              <span class="dot" style="background:var(--accent-2);margin-left:10px"></span>
-              <span class="value" id="completedCount">0</span> completed
-            </div>
             <div class="list" id="pendingList"></div>
           </div>
 
@@ -281,14 +300,18 @@
             <option value="week">Due this week</option>
             <option value="overdue">Overdue</option>
           </select>
+          <select id="statusFilter">
+            <option value="all">All status</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+          </select>
         </div>
-
         <div id="subjectsContainer"></div>
       </section>
 
       <!-- NOTICES -->
       <section id="view-notices" style="display:none">
-        <div class="grid">
+        <div class="grid cards">
           <div class="card">
             <h3>Pinned</h3>
             <div class="notice">
@@ -311,7 +334,7 @@
         <div class="grid">
           <div class="card">
             <h3>Faculty directory</h3>
-            <div class="sub">Find mentors, subjects taught, and contacts</div>
+            <div class="sub">Mentors, subjects taught, and contacts</div>
             <div class="faculty" id="facultyGrid"></div>
           </div>
         </div>
@@ -330,8 +353,8 @@
                   <span class="sub" id="calYear"></span>
                 </div>
                 <div style="display:flex;gap:8px">
-                  <button class="btn ghost" id="prevMonth">◀</button>
-                  <button class="btn ghost" id="nextMonth">▶</button>
+                  <button class="btn-ghost" id="prevMonth">◀</button>
+                  <button class="btn-ghost" id="nextMonth">▶</button>
                 </div>
               </div>
               <div class="cal-grid" id="calendarGrid"></div>
@@ -350,7 +373,86 @@
               <div class="chat-log" id="chatLog"></div>
               <div class="chat-input">
                 <input type="text" id="chatInput" placeholder="Type your question…">
-                <button class="btn" id="sendChat">Ask</button>
+                <button class="btn-primary" id="sendChat">Ask</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="view-profile" style="display:none">
+        <div class="grid">
+          <div class="card">
+            <h3>Your profile</h3>
+            <div class="sub">Update your info, see progress and streaks</div>
+            <div class="profile-grid">
+              <div class="item profile-card">
+                <div class="avatar" id="pfAvatar">U</div>
+                <div>
+                  <div class="title" style="font-weight:700" id="pfName">Student Name</div>
+                  <div class="meta" id="pfEmail">student@college.edu</div>
+                  <div class="meta" id="pfCourse">Course — Section</div>
+                  <div class="streak">
+                    <span class="badge">🔥 Streak: <span id="pfStreak">3</span> days</span>
+                    <span class="badge">🏆 Badges: On-time, Pro Organizer</span>
+                  </div>
+                </div>
+                <div><button class="btn-ghost" id="editProfileBtn">Edit</button></div>
+              </div>
+              <div class="item">
+                <span>📈</span>
+                <div>
+                  <div class="title">Assignment progress</div>
+                  <div class="progress"><div class="bar" id="pfProgressBar" style="width:0%"></div></div>
+                  <div class="meta" id="pfProgressText">0% completed</div>
+                </div>
+                <div class="actions">
+                  <span class="badge ok" id="pfOnTime">On-time rate: 100%</span>
+                </div>
+              </div>
+              <div class="item">
+                <span>🗂️</span>
+                <div>
+                  <div class="title">Groups</div>
+                  <div class="meta" id="pfGroups">B.Tech CS • Section A</div>
+                </div>
+                <button class="btn-ghost" id="pfSwitch">Switch</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="view-settings" style="display:none">
+        <div class="grid">
+          <div class="card">
+            <h3>Settings</h3>
+            <div class="list">
+              <div class="item">
+                <span>🌓</span>
+                <div>
+                  <div class="title">Theme</div>
+                  <div class="meta">Toggle dark / light</div>
+                </div>
+                <div class="switch" id="settingsThemeSwitch"><div class="knob"></div></div>
+              </div>
+              <div class="item">
+                <span>🔔</span>
+                <div>
+                  <div class="title">Smart reminders</div>
+                  <div class="meta">Urgent items within 48 hours</div>
+                </div>
+                <button class="btn-ghost" id="testReminder">Test</button>
+              </div>
+              <div class="item">
+                <span>🧹</span>
+                <div>
+                  <div class="title">Reset progress</div>
+                  <div class="meta">Clear local completion data</div>
+                </div>
+                <button class="btn-ghost" id="resetProgress">Reset</button>
               </div>
             </div>
           </div>
@@ -365,7 +467,7 @@
 
   <script>
     // ----- Mock data -----
-    const group = { course: "B.Tech Computer Science", section: "A", inviteLink: "https://campusflow.example/join?course=BTCS&section=A" };
+    let group = { course: "", section: "", inviteLink: "" };
     const subjects = [
       { code:"CS201", name:"Data Structures" },
       { code:"CS204", name:"Operating Systems" },
@@ -418,21 +520,25 @@
       completed: JSON.parse(localStorage.getItem("cf_completed")||"[]"),
       subjectFilter:"all",
       dateFilter:"all",
-      query:""
+      statusFilter:"all",
+      query:"",
+      theme: localStorage.getItem("cf_theme") || "dark",
+      streak: Number(localStorage.getItem("cf_streak")||"3"),
+      name: localStorage.getItem("cf_name") || "Student Name",
+      email: localStorage.getItem("cf_email") || "student@college.edu"
     };
-    const today = new Date("2026-01-06T16:05:00+05:30"); // fixed for demo
+    const fixedNow = "2026-01-06T16:05:00+05:30";
+    const today = new Date(fixedNow);
 
     // ----- Utilities -----
     const fmtDate = d => new Date(d).toLocaleDateString(undefined,{month:"short",day:"numeric"});
     const daysDiff = d => Math.ceil((new Date(d)-today)/(1000*60*60*24));
     const isOverdue = d => new Date(d) < today;
     const inNext7Days = d => daysDiff(d)>=0 && daysDiff(d)<=7;
+    const capitalize = s => s ? s[0].toUpperCase()+s.slice(1) : s;
 
-    function saveProgress(){
-      localStorage.setItem("cf_completed", JSON.stringify(state.completed));
-    }
+    function saveProgress(){ localStorage.setItem("cf_completed", JSON.stringify(state.completed)); }
     function aiSummarize(text){
-      // Simple extractive summary: first sentence + key phrase
       const first = text.split(".")[0].trim();
       const keywords = (text.match(/\b(exam|schedule|teams|maintenance|hours|due|portal|hackathon|seating)\b/gi)||[])
         .slice(0,3).map(k=>k.toLowerCase());
@@ -457,34 +563,95 @@
       return "📌";
     }
 
-    // ----- Tabs -----
-    const tabEls = document.querySelectorAll(".tab");
-    tabEls.forEach(t=>{
-      t.addEventListener("click",()=>{
-        tabEls.forEach(x=>x.classList.remove("active"));
-        t.classList.add("active");
-        const v = t.dataset.view;
-        document.querySelectorAll("main section").forEach(s=>s.style.display="none");
-        document.querySelector(`#view-${v}`).style.display="block";
-      });
+    // ----- Theme -----
+    function applyTheme(){
+      document.documentElement.setAttribute("data-theme", state.theme);
+      localStorage.setItem("cf_theme", state.theme);
+    }
+    function toggleTheme(){
+      state.theme = state.theme === "dark" ? "light" : "dark";
+      applyTheme();
+    }
+    applyTheme();
+
+    // ----- Login -----
+    function buildInviteLink(course, section){
+      const slugC = encodeURIComponent(course.split(" ")[0]);
+      const slugS = encodeURIComponent(section);
+      return `https://campusflow.example/join?course=${slugC}&section=${slugS}`;
+    }
+    function afterLogin(){
+      document.getElementById("loginPage").style.display="none";
+      document.getElementById("appRoot").style.display="grid";
+      document.getElementById("groupPill").textContent = `Group: ${group.course} • Section ${group.section}`;
+      renderAll();
+      notifyDot(true);
+      fillProfile();
+    }
+    document.getElementById("loginForm").addEventListener("submit",(e)=>{
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const course = document.getElementById("courseSelect").value.trim();
+      const section = document.getElementById("sectionSelect").value.trim();
+      if(!email || !pass || !course || !section){
+        alert("Please fill email, password, course and section.");
+        return;
+      }
+      state.name = email.split("@")[0].replace(/\./g," ");
+      state.email = email;
+      localStorage.setItem("cf_name", state.name);
+      localStorage.setItem("cf_email", state.email);
+      group = { course, section, inviteLink: buildInviteLink(course, section) };
+      afterLogin();
+    });
+    document.getElementById("skipLogin").addEventListener("click",()=>{
+      group = { course:"B.Tech Computer Science", section:"A", inviteLink: buildInviteLink("B.Tech CS","A") };
+      afterLogin();
+    });
+    document.getElementById("themeSwitch").addEventListener("click",()=>{
+      toggleTheme();
     });
 
-    // ----- Invite -----
+    // ----- Topbar controls -----
     document.getElementById("copyInvite").addEventListener("click",()=>{
+      if(!group.inviteLink) return alert("Login to generate invite link.");
       navigator.clipboard.writeText(group.inviteLink);
       alert("Invite link copied!");
     });
     document.getElementById("switchGroup").addEventListener("click",()=>{
-      alert("Group switch is a prototype action. In production, select course + section and receive a new invite link.");
+      alert("Prototype: Use Settings > Groups to switch (or revisit login).");
     });
+    function notifyDot(show){ document.getElementById("notifDot").style.display = show ? "inline-block" : "none"; }
+    document.getElementById("notifBtn").addEventListener("click",()=>{
+      notifyDot(false);
+      alert("Notifications: 2 new notices, 1 assignment due soon.");
+    });
+    document.getElementById("themeBtn").addEventListener("click", toggleTheme);
+    document.getElementById("profileBtn").addEventListener("click",()=>{
+      switchTab("profile");
+    });
+
+    // ----- Tabs -----
+    const tabEls = document.querySelectorAll(".tab");
+    tabEls.forEach(t=>{
+      t.addEventListener("click",()=>{
+        switchTab(t.dataset.view);
+      });
+    });
+    function switchTab(view){
+      tabEls.forEach(x=>x.classList.remove("active"));
+      const btn = Array.from(tabEls).find(b=>b.dataset.view===view);
+      if(btn) btn.classList.add("active");
+      document.querySelectorAll("main section").forEach(s=>s.style.display="none");
+      const target = document.querySelector(`#view-${view}`);
+      if(target) target.style.display="block";
+    }
 
     // ----- Dashboard rendering -----
     function renderDashboard(){
-      // Pending + completed
       const pend = assignments.filter(a=>!state.completed.includes(a.id));
       const comp = assignments.filter(a=>state.completed.includes(a.id));
-      document.getElementById("pendingCount").textContent = pend.length;
-      document.getElementById("completedCount").textContent = comp.length;
       const pct = Math.round((comp.length/assignments.length)*100);
       document.getElementById("overallProgress").style.width = pct+"%";
 
@@ -569,8 +736,7 @@
           e.target.classList.add("done"); e.target.textContent="✓";
         }
         saveProgress();
-        renderDashboard();
-        renderSubjects();
+        renderAll();
       }
     });
 
@@ -586,14 +752,18 @@
           sf.appendChild(opt);
         });
       }
+      const statusF = state.statusFilter;
       const filteredAssignments = assignments.filter(a=>{
         const matchSubject = state.subjectFilter==="all" ? true : a.subject===state.subjectFilter;
         const matchDate = state.dateFilter==="all" ? true
           : state.dateFilter==="today" ? (new Date(a.due).toDateString()===today.toDateString())
           : state.dateFilter==="week" ? inNext7Days(a.due)
           : state.dateFilter==="overdue" ? isOverdue(a.due) : true;
+        const matchStatus = statusF==="all" ? true
+          : statusF==="pending" ? !state.completed.includes(a.id)
+          : statusF==="completed" ? state.completed.includes(a.id) : true;
         const matchQuery = state.query? (a.title.toLowerCase().includes(state.query)||a.subject.toLowerCase().includes(state.query)) : true;
-        return matchSubject && matchDate && matchQuery;
+        return matchSubject && matchDate && matchStatus && matchQuery;
       });
 
       subjects.forEach(s=>{
@@ -645,6 +815,9 @@
     document.getElementById("dateFilter").addEventListener("change",(e)=>{
       state.dateFilter = e.target.value; renderSubjects();
     });
+    document.getElementById("statusFilter").addEventListener("change",(e)=>{
+      state.statusFilter = e.target.value; renderSubjects();
+    });
     document.getElementById("searchInput").addEventListener("input",(e)=>{
       state.query = e.target.value.trim().toLowerCase(); renderSubjects();
     });
@@ -677,14 +850,18 @@
       faculty.forEach(f=>{
         const div = document.createElement("div");
         div.className="fac-card";
+        const initials = (f.name.match(/\b[A-Za-z]/g)||["?"]).slice(0,2).join("");
         div.innerHTML = `
-          <div class="avatar">${f.name.split(" ")[1]?.[0]||f.name[0]}</div>
+          <div class="avatar">${initials}</div>
           <div>
             <div class="title" style="font-weight:700">${f.name}</div>
             <div class="meta">${f.subject}</div>
             <div class="meta">${f.email} • ${f.phone}</div>
           </div>
-          <div><a class="btn secondary" href="mailto:${f.email}">Email</a></div>
+          <div style="display:flex;gap:6px">
+            <a class="btn-primary" style="text-decoration:none;padding:8px;border-radius:8px" href="mailto:${f.email}">Email</a>
+            <a class="btn-ghost" style="text-decoration:none;padding:8px;border-radius:8px" href="tel:${f.phone.replace(/\\s/g,'')}">Call</a>
+          </div>
         `;
         grid.appendChild(div);
       });
@@ -705,11 +882,9 @@
       const startIdx = firstDay.getDay(); // 0 Sun..6 Sat
       const daysInMonth = new Date(yearNum, calCursor.getMonth()+1, 0).getDate();
 
-      // Leading empty cells
       for(let i=0;i<startIdx;i++){
         const d = document.createElement("div"); d.className="cal-day empty"; grid.appendChild(d);
       }
-      // Days
       for(let day=1; day<=daysInMonth; day++){
         const d = new Date(yearNum, calCursor.getMonth(), day);
         const iso = d.toISOString().slice(0,10);
@@ -746,7 +921,7 @@
     }
     function chatbotAnswer(q){
       const qq = q.toLowerCase();
-      if(qq.includes("pending") && qq.includes("homework")) return pendingList();
+      if(qq.includes("pending") && (qq.includes("homework")||qq.includes("assignment"))) return pendingList();
       if(qq.includes("next deadline") || qq.includes("upcoming")) return nextDeadline();
       if(qq.includes("overdue")) {
         const od = assignments.filter(a=>!state.completed.includes(a.id) && isOverdue(a.due)).map(a=>`${a.title} — ${fmtDate(a.due)}`).join("<br>");
@@ -757,31 +932,91 @@
         const pct = Math.round((comp/assignments.length)*100);
         return `You’re ${pct}% through your assignments.`;
       }
-      if(qq.includes("filter")) return "Use the Subjects tab: choose a subject and date filter, or search by keywords.";
+      if(qq.includes("filter")) return "Use the Subjects tab: choose a subject and date/status filter, or search by keywords.";
+      if(qq.includes("notice")) return "Pinned: " + (notices.find(n=>n.pinned)?.title || "No pinned notices");
       return "Try: “What homework is pending?”, “What is the next deadline?”, “Show overdue items”, or “My progress percentage”.";
     }
     document.getElementById("sendChat").addEventListener("click",()=>{
       const q = document.getElementById("chatInput").value.trim();
       if(!q) return;
       chatSay("You", q);
-      setTimeout(()=> chatSay("AI", chatbotAnswer(q)), 300);
+      setTimeout(()=> chatSay("AI", chatbotAnswer(q)), 350);
       document.getElementById("chatInput").value="";
     });
 
-    // ----- Init -----
-    function init(){
+    // ----- Profile -----
+    function fillProfile(){
+      const initials = (state.name.match(/\b[A-Za-z]/g)||["U"]).slice(0,2).join("");
+      document.getElementById("pfAvatar").textContent = initials.toUpperCase();
+      document.getElementById("pfName").textContent = capitalize(state.name);
+      document.getElementById("pfEmail").textContent = state.email;
+      document.getElementById("pfCourse").textContent = `${group.course || '—'} • Section ${group.section || '—'}`;
+      document.getElementById("pfStreak").textContent = state.streak;
+      const comp = assignments.filter(a=>state.completed.includes(a.id)).length;
+      const pct = Math.round((comp/assignments.length)*100);
+      document.getElementById("pfProgressBar").style.width = pct+"%";
+      document.getElementById("pfProgressText").textContent = `${pct}% completed`;
+      const overdueRate = assignments.filter(a=>isOverdue(a.due) && !state.completed.includes(a.id)).length;
+      const onTimeText = overdueRate ? "On-time rate: 80%" : "On-time rate: 100%";
+      document.getElementById("pfOnTime").textContent = onTimeText;
+      document.getElementById("pfGroups").textContent = `${group.course || '—'} • Section ${group.section || '—'}`;
+    }
+    document.getElementById("pfSwitch").addEventListener("click",()=>{
+      alert("Prototype: To switch, logout and login with a different course + section.");
+    });
+    document.getElementById("editProfileBtn").addEventListener("click",()=>{
+      const newName = prompt("Enter display name:", state.name);
+      if(newName && newName.trim()){
+        state.name = newName.trim();
+        localStorage.setItem("cf_name", state.name);
+        fillProfile();
+      }
+    });
+
+    // ----- Settings -----
+    document.getElementById("settingsThemeSwitch").addEventListener("click",()=>{
+      toggleTheme();
+    });
+    document.getElementById("testReminder").addEventListener("click",()=>{
+      notifyDot(true);
+      alert("Smart reminder triggered: 1 item due within 48 hours.");
+    });
+    document.getElementById("resetProgress").addEventListener("click",()=>{
+      if(confirm("Clear assignment completion progress?")){
+        state.completed = [];
+        saveProgress();
+        renderAll();
+        fillProfile();
+      }
+    });
+
+    // ----- Global completion toggle click -----
+    document.addEventListener("click",(e)=>{
+      if(e.target.classList.contains("tab")){
+        // handled in switchTab
+      }
+    });
+
+    // ----- Render orchestrator -----
+    function renderAll(){
       renderDashboard();
       renderSubjects();
       renderNotices();
       renderFaculty();
       renderCalendar();
-      // Seed dashboard pinned summary
-      const pin = notices.find(n=>n.pinned);
-      if(pin){
-        document.getElementById("pinnedNoticeSummary").textContent = aiSummarize(pin.body);
-      }
+      fillProfile();
     }
-    init();
+
+    // ----- Filters update events -----
+    document.getElementById("statusFilter").addEventListener("change",(e)=>{
+      state.statusFilter = e.target.value; renderSubjects();
+    });
+
+    // ----- Init if rehydrated session -----
+    (function bootstrap(){
+      applyTheme();
+      // Start on login screen; the app shows after login or skip
+    })();
   </script>
 </body>
 </html>
