@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CampusFlow — Academic Collaboration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --panel:#111827; /* gray-900 */
+      --card:#1f2937; /* gray-800 */
+      --muted:#9ca3af; /* gray-400 */
+      --text:#f9fafb; /* gray-50 */
+      --accent:#22c55e; /* green-500 */
+      --accent-2:#6366f1; /* indigo-500 */
+      --danger:#ef4444; /* red-500 */
+      --warn:#f59e0b; /* amber-500 */
+      --primary:#0ea5e9; /* sky-500 */
+      --border:#374151;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg, #0b1223 0%, #0f172a 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    a{color:var(--primary);text-decoration:none}
+    .app{
+      display:grid;
+      grid-template-rows:auto 1fr;
+      min-height:100vh;
+    }
+    header{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:saturate(1.2) blur(8px);
+      background:rgba(17,24,39,0.85);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar{
+      display:flex;align-items:center;gap:12px;
+      padding:12px 16px;
+    }
+    .logo{
+      display:flex;align-items:center;gap:10px;
+      font-weight:700;letter-spacing:0.2px;
+    }
+    .logo .mark{
+      width:28px;height:28px;border-radius:8px;
+      background:linear-gradient(135deg,var(--accent-2),var(--accent));
+      display:grid;place-items:center;color:white;font-weight:800;
+      box-shadow:0 6px 18px rgba(99,102,241,0.35);
+    }
+    .invite{
+      margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+    }
+    .pill{
+      background:rgba(99,102,241,0.12);
+      color:#c7d2fe;border:1px dashed rgba(99,102,241,0.35);
+      padding:8px 10px;border-radius:999px;font-size:12px;
+    }
+    .btn{
+      background:var(--accent-2);color:white;border:none;
+      padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;
+    }
+    .btn.secondary{background:var(--accent);color:#052e1a}
+    .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+    nav.tabs{
+      display:flex;gap:8px;padding:8px 16px;overflow:auto;
+      border-top:1px solid var(--border);
+    }
+    .tab{
+      padding:10px 12px;border-radius:10px;cursor:pointer;
+      background:transparent;border:1px solid var(--border);color:var(--text);
+      white-space:nowrap;
+    }
+    .tab.active{background:var(--card);border-color:var(--primary);box-shadow:0 0 0 2px rgba(14,165,233,0.25) inset}
+    main{
+      padding:16px;max-width:1200px;margin:0 auto;width:100%;
+    }
+    .grid{
+      display:grid;gap:12px;
+    }
+    /* Responsive columns */
+    .grid.cards{
+      grid-template-columns:1fr;
+    }
+    @media(min-width:768px){
+      .grid.cards{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(min-width:1024px){
+      .grid.cards{grid-template-columns:repeat(3,1fr)}
+    }
+    .card{
+      background:linear-gradient(180deg, rgba(31,41,55,0.9), rgba(24,33,46,0.9));
+      border:1px solid var(--border);
+      border-radius:14px;padding:14px;position:relative;
+    }
+    .card h3{margin:0 0 8px 0;font-size:16px}
+    .card .sub{color:var(--muted);font-size:12px;margin-top:-2px}
+    .kpi{
+      display:flex;gap:10px;align-items:center;margin-top:6px
+    }
+    .kpi .dot{width:8px;height:8px;border-radius:50%}
+    .kpi .value{font-weight:700}
+    .progress{
+      height:10px;border-radius:999px;background:#0b1223;border:1px solid var(--border);
+      overflow:hidden;margin-top:8px;
+    }
+    .progress .bar{
+      height:100%;background:linear-gradient(90deg,var(--accent),#34d399);
+      width:0%;transition:width .3s ease;border-right:1px solid rgba(0,0,0,0.2);
+    }
+    .list{
+      display:flex;flex-direction:column;gap:8px;margin-top:8px;
+    }
+    .item{
+      display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+      gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:rgba(2,6,23,0.6);
+    }
+    .item .title{font-weight:600}
+    .item .meta{color:var(--muted);font-size:12px}
+    .item .actions{display:flex;gap:6px}
+    .chk{
+      width:18px;height:18px;border:2px solid var(--muted);border-radius:6px;display:grid;place-items:center;cursor:pointer;
+    }
+    .chk.done{background:var(--accent);border-color:var(--accent)}
+    .badge{
+      padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:rgba(255,255,255,0.04)
+    }
+    .badge.warn{color:#fde68a;border-color:#fde68a;background:rgba(245,158,11,0.1)}
+    .badge.danger{color:#fecaca;border-color:#fecaca;background:rgba(239,68,68,0.1)}
+    .badge.ok{color:#d1fae5;border-color:#d1fae5;background:rgba(34,197,94,0.08)}
+    .notice{
+      display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border);border-radius:12px;background:rgba(31,41,55,0.6)
+    }
+    .pin{color:#fde68a}
+    .notice .summary{color:#cbd5e1;font-size:13px}
+    .searchbar{
+      display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:12px
+    }
+    input,select{
+      background:rgba(2,6,23,0.6);color:var(--text);
+      border:1px solid var(--border);border-radius:10px;padding:10px;font-size:14px;
+    }
+    .faculty{
+      display:grid;gap:12px;grid-template-columns:1fr;
+    }
+    @media(min-width:600px){
+      .faculty{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(min-width:900px){
+      .faculty{grid-template-columns:repeat(3,1fr)}
+    }
+    .fac-card{
+      display:grid;grid-template-columns:56px 1fr auto;gap:10px;align-items:center;
+      background:rgba(31,41,55,0.8);border:1px solid var(--border);border-radius:12px;padding:10px;
+    }
+    .avatar{
+      width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#334155,#1f2937);
+      display:grid;place-items:center;font-weight:800;color:#cbd5e1;
+    }
+    .cal{
+      display:grid;gap:8px
+    }
+    .cal .head{
+      display:flex;justify-content:space-between;align-items:center
+    }
+    .cal-grid{
+      display:grid;grid-template-columns:repeat(7,1fr);gap:6px
+    }
+    .cal-day{
+      border:1px solid var(--border);border-radius:10px;padding:10px;background:rgba(2,6,23,0.5);
+      min-height:72px;position:relative
+    }
+    .cal-day .num{position:absolute;top:6px;left:8px;font-size:12px;color:var(--muted)}
+    .cal-day .tag{position:absolute;bottom:6px;left:6px;right:6px}
+    .empty{opacity:0.25}
+    .helper{
+      border:1px solid var(--border);border-radius:12px;padding:10px;background:rgba(31,41,55,0.6)
+    }
+    .chat{
+      display:grid;grid-template-rows:1fr auto;gap:8px;height:300px
+    }
+    .chat-log{
+      overflow:auto;border:1px solid var(--border);border-radius:12px;padding:10px;background:rgba(2,6,23,0.6)
+    }
+    .msg{margin-bottom:8px}
+    .msg .who{font-size:12px;color:var(--muted)}
+    .msg .text{background:rgba(31,41,55,0.8);display:inline-block;padding:8px 10px;border-radius:10px;margin-top:4px}
+    .chat-input{
+      display:grid;grid-template-columns:1fr auto;gap:8px
+    }
+    footer{
+      padding:16px;color:var(--muted);text-align:center
+    }
+    .inline-icon{opacity:0.9}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="topbar">
+        <div class="logo">
+          <div class="mark">CF</div>
+          CampusFlow
+          <span class="sub" style="font-weight:500;color:#9ca3af">Structured alternative to WhatsApp groups</span>
+        </div>
+        <div class="invite">
+          <span class="pill">Group: B.Tech CS • Section A</span>
+          <button class="btn" id="copyInvite">Copy invite link</button>
+          <button class="btn ghost" id="switchGroup">Switch group</button>
+        </div>
+      </div>
+      <nav class="tabs" id="tabs">
+        <button class="tab active" data-view="dashboard">Dashboard</button>
+        <button class="tab" data-view="subjects">Subjects</button>
+        <button class="tab" data-view="notices">Notice board</button>
+        <button class="tab" data-view="faculty">Faculty</button>
+        <button class="tab" data-view="calendar">Calendar</button>
+        <button class="tab" data-view="chatbot">AI assistant</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- DASHBOARD -->
+      <section id="view-dashboard">
+        <div class="grid cards">
+          <div class="card">
+            <h3>Pending assignments</h3>
+            <div class="sub">Your tasks across all subjects</div>
+            <div class="progress"><div class="bar" id="overallProgress"></div></div>
+            <div class="kpi">
+              <span class="dot" style="background:var(--accent)"></span>
+              <span class="value" id="pendingCount">0</span> pending
+              <span class="dot" style="background:var(--accent-2);margin-left:10px"></span>
+              <span class="value" id="completedCount">0</span> completed
+            </div>
+            <div class="list" id="pendingList"></div>
+          </div>
+
+          <div class="card">
+            <h3>Upcoming deadlines</h3>
+            <div class="sub">Next 7 days</div>
+            <div class="list" id="deadlinesList"></div>
+          </div>
+
+          <div class="card">
+            <h3>Latest notices</h3>
+            <div class="sub">Pinned announcements stay on top</div>
+            <div class="notice">
+              <span class="pin">📌</span>
+              <div>
+                <div class="title" id="pinnedNoticeTitle">Mid-sem timetable released</div>
+                <div class="summary" id="pinnedNoticeSummary">AI summary will appear here.</div>
+              </div>
+            </div>
+            <div class="list" id="latestNotices"></div>
+          </div>
+        </div>
+
+        <div class="grid" style="margin-top:12px">
+          <div class="card helper">
+            <h3>Smart reminders</h3>
+            <div id="reminders"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUBJECTS -->
+      <section id="view-subjects" style="display:none">
+        <div class="searchbar">
+          <input type="text" id="searchInput" placeholder="Search assignments, homework, notes">
+          <select id="subjectFilter">
+            <option value="all">All subjects</option>
+          </select>
+          <select id="dateFilter">
+            <option value="all">Any due date</option>
+            <option value="today">Due today</option>
+            <option value="week">Due this week</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </div>
+
+        <div id="subjectsContainer"></div>
+      </section>
+
+      <!-- NOTICES -->
+      <section id="view-notices" style="display:none">
+        <div class="grid">
+          <div class="card">
+            <h3>Pinned</h3>
+            <div class="notice">
+              <span class="pin">📌</span>
+              <div>
+                <div class="title" id="pinnedTitle2">Campus hackathon — registrations open</div>
+                <div class="summary" id="pinnedSummary2"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>All notices</h3>
+            <div class="list" id="noticesList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FACULTY -->
+      <section id="view-faculty" style="display:none">
+        <div class="grid">
+          <div class="card">
+            <h3>Faculty directory</h3>
+            <div class="sub">Find mentors, subjects taught, and contacts</div>
+            <div class="faculty" id="facultyGrid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CALENDAR -->
+      <section id="view-calendar" style="display:none">
+        <div class="grid">
+          <div class="card">
+            <h3>Academic calendar</h3>
+            <div class="sub">Holidays, exams, and submissions</div>
+            <div class="cal">
+              <div class="head">
+                <div>
+                  <span id="calMonth" style="font-weight:700"></span>
+                  <span class="sub" id="calYear"></span>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <button class="btn ghost" id="prevMonth">◀</button>
+                  <button class="btn ghost" id="nextMonth">▶</button>
+                </div>
+              </div>
+              <div class="cal-grid" id="calendarGrid"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHATBOT -->
+      <section id="view-chatbot" style="display:none">
+        <div class="grid">
+          <div class="card">
+            <h3>AI assistant</h3>
+            <div class="sub">Ask: “What homework is pending?” or “What is the next deadline?”</div>
+            <div class="chat">
+              <div class="chat-log" id="chatLog"></div>
+              <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type your question…">
+                <button class="btn" id="sendChat">Ask</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      CampusFlow Prototype • Built for organization, not endless scrolling
+    </footer>
+  </div>
+
+  <script>
+    // ----- Mock data -----
+    const group = { course: "B.Tech Computer Science", section: "A", inviteLink: "https://campusflow.example/join?course=BTCS&section=A" };
+    const subjects = [
+      { code:"CS201", name:"Data Structures" },
+      { code:"CS204", name:"Operating Systems" },
+      { code:"MA210", name:"Discrete Mathematics" },
+      { code:"HS105", name:"Professional Communication" }
+    ];
+    const assignments = [
+      { id:"a1", subject:"CS201", type:"Assignment", title:"Implement Linked List operations", due:"2026-01-08", tags:["DS","coding"], points:10 },
+      { id:"a2", subject:"CS201", type:"Homework", title:"Solve stack vs queue problems", due:"2026-01-07", tags:["practice"], points:5 },
+      { id:"a3", subject:"CS204", type:"Lab", title:"Process scheduling simulator", due:"2026-01-10", tags:["lab","CPU"], points:15 },
+      { id:"a4", subject:"MA210", type:"Assignment", title:"Graph theory: shortest paths set", due:"2026-01-06", tags:["overdue","math"], points:10 },
+      { id:"a5", subject:"HS105", type:"Notes", title:"Prepare slides: Group discussion", due:"2026-01-09", tags:["presentation"], points:5 }
+    ];
+    const homeworkNotes = {
+      "CS201":[
+        { kind:"Notes", title:"Complexity cheatsheet", url:"#", aiTag:["notes","complexity"] },
+        { kind:"Homework", title:"LeetCode week 1", url:"#", aiTag:["practice","coding"] }
+      ],
+      "CS204":[
+        { kind:"Homework", title:"File systems reading", url:"#", aiTag:["reading","FS"] }
+      ],
+      "MA210":[
+        { kind:"Notes", title:"Combinatorics reference", url:"#", aiTag:["notes","combinatorics"] }
+      ],
+      "HS105":[
+        { kind:"Homework", title:"Elevator pitch draft", url:"#", aiTag:["communication"] }
+      ]
+    };
+    const notices = [
+      { id:"n1", title:"Mid-sem timetable released", body:"Mid-semester exam schedule for all departments is released. Check the portal for date-wise timetable and seating.", date:"2026-01-06", pinned:true },
+      { id:"n2", title:"Campus hackathon — registrations open", body:"48-hour hackathon is scheduled next week. Teams of 3-5. Problem statements will be shared on kickoff.", date:"2026-01-05", pinned:true },
+      { id:"n3", title:"Library hours extended", body:"Library remains open till 10 PM during exams. Quiet spaces on 2nd floor.", date:"2026-01-04" },
+      { id:"n4", title:"Lab maintenance", body:"CS lab 2 will be offline on Friday 12–2 PM for scheduled maintenance.", date:"2026-01-03" }
+    ];
+    const faculty = [
+      { name:"Dr. A. Mehta", subject:"Data Structures", email:"amehta@college.edu", phone:"+91 98765 43210" },
+      { name:"Prof. R. Iyer", subject:"Operating Systems", email:"riyer@college.edu", phone:"+91 99876 12345" },
+      { name:"Dr. S. Rao", subject:"Discrete Mathematics", email:"srao@college.edu", phone:"+91 91234 56789" },
+      { name:"Ms. P. Kaur", subject:"Professional Communication", email:"pkaur@college.edu", phone:"+91 97654 32109" }
+    ];
+    const calendarEvents = [
+      { date:"2026-01-07", kind:"submission", label:"Stacks & Queues due" },
+      { date:"2026-01-08", kind:"submission", label:"Linked List assignment due" },
+      { date:"2026-01-10", kind:"exam", label:"OS Lab submission" },
+      { date:"2026-01-12", kind:"holiday", label:"Campus Day" }
+    ];
+
+    // ----- State -----
+    const state = {
+      completed: JSON.parse(localStorage.getItem("cf_completed")||"[]"),
+      subjectFilter:"all",
+      dateFilter:"all",
+      query:""
+    };
+    const today = new Date("2026-01-06T16:05:00+05:30"); // fixed for demo
+
+    // ----- Utilities -----
+    const fmtDate = d => new Date(d).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+    const daysDiff = d => Math.ceil((new Date(d)-today)/(1000*60*60*24));
+    const isOverdue = d => new Date(d) < today;
+    const inNext7Days = d => daysDiff(d)>=0 && daysDiff(d)<=7;
+
+    function saveProgress(){
+      localStorage.setItem("cf_completed", JSON.stringify(state.completed));
+    }
+    function aiSummarize(text){
+      // Simple extractive summary: first sentence + key phrase
+      const first = text.split(".")[0].trim();
+      const keywords = (text.match(/\b(exam|schedule|teams|maintenance|hours|due|portal|hackathon|seating)\b/gi)||[])
+        .slice(0,3).map(k=>k.toLowerCase());
+      return `${first}. Key: ${[...new Set(keywords)].join(", ") || "info"}`;
+    }
+    function aiAutoTag(item){
+      const title = item.title.toLowerCase();
+      const tags = [];
+      if(title.includes("stack")||title.includes("queue")) tags.push("data-structures");
+      if(title.includes("linked list")) tags.push("data-structures");
+      if(title.includes("scheduling")||title.includes("process")) tags.push("os");
+      if(title.includes("graph")||title.includes("shortest")) tags.push("math");
+      if(title.includes("pitch")||title.includes("discussion")) tags.push("communication");
+      if(isOverdue(item.due)) tags.push("overdue");
+      return tags.length?tags:["general"];
+    }
+    function icon(kind){
+      if(kind==="overdue") return "⏰";
+      if(kind==="submission") return "📝";
+      if(kind==="exam") return "📚";
+      if(kind==="holiday") return "🎉";
+      return "📌";
+    }
+
+    // ----- Tabs -----
+    const tabEls = document.querySelectorAll(".tab");
+    tabEls.forEach(t=>{
+      t.addEventListener("click",()=>{
+        tabEls.forEach(x=>x.classList.remove("active"));
+        t.classList.add("active");
+        const v = t.dataset.view;
+        document.querySelectorAll("main section").forEach(s=>s.style.display="none");
+        document.querySelector(`#view-${v}`).style.display="block";
+      });
+    });
+
+    // ----- Invite -----
+    document.getElementById("copyInvite").addEventListener("click",()=>{
+      navigator.clipboard.writeText(group.inviteLink);
+      alert("Invite link copied!");
+    });
+    document.getElementById("switchGroup").addEventListener("click",()=>{
+      alert("Group switch is a prototype action. In production, select course + section and receive a new invite link.");
+    });
+
+    // ----- Dashboard rendering -----
+    function renderDashboard(){
+      // Pending + completed
+      const pend = assignments.filter(a=>!state.completed.includes(a.id));
+      const comp = assignments.filter(a=>state.completed.includes(a.id));
+      document.getElementById("pendingCount").textContent = pend.length;
+      document.getElementById("completedCount").textContent = comp.length;
+      const pct = Math.round((comp.length/assignments.length)*100);
+      document.getElementById("overallProgress").style.width = pct+"%";
+
+      const listEl = document.getElementById("pendingList");
+      listEl.innerHTML="";
+      pend.sort((a,b)=>new Date(a.due)-new Date(b.due)).forEach(a=>{
+        const overdue = isOverdue(a.due);
+        const div = document.createElement("div");
+        div.className="item";
+        div.innerHTML = `
+          <div class="chk ${state.completed.includes(a.id)?'done':''}" data-id="${a.id}" title="Mark complete">${state.completed.includes(a.id)?'✓':''}</div>
+          <div>
+            <div class="title">${a.title}</div>
+            <div class="meta">${a.type} • ${a.subject} • Due ${fmtDate(a.due)}</div>
+            <div class="meta">AI tags: ${aiAutoTag(a).join(", ")}</div>
+          </div>
+          <div class="actions">
+            <span class="badge ${overdue?'danger':inNext7Days(a.due)?'warn':'ok'}">${overdue?'Overdue':inNext7Days(a.due)?'Due soon':'On track'}</span>
+          </div>
+        `;
+        listEl.appendChild(div);
+      });
+
+      // Upcoming deadlines
+      const upcoming = assignments.filter(a=>inNext7Days(a.due)).sort((a,b)=>new Date(a.due)-new Date(b.due));
+      const dlEl = document.getElementById("deadlinesList");
+      dlEl.innerHTML="";
+      upcoming.forEach(a=>{
+        const div = document.createElement("div");
+        div.className="item";
+        div.innerHTML = `
+          <span class="inline-icon">🗓️</span>
+          <div>
+            <div class="title">${a.title}</div>
+            <div class="meta">${a.subject} • Due ${fmtDate(a.due)}</div>
+          </div>
+          <span class="badge warn">Due in ${daysDiff(a.due)} day(s)</span>
+        `;
+        dlEl.appendChild(div);
+      });
+
+      // Latest notices
+      const pin = notices.find(n=>n.pinned);
+      if(pin){
+        document.getElementById("pinnedNoticeTitle").textContent = pin.title;
+        document.getElementById("pinnedNoticeSummary").textContent = aiSummarize(pin.body);
+      }
+      const latest = notices.filter(n=>!n.pinned).slice(0,3);
+      const nEl = document.getElementById("latestNotices");
+      nEl.innerHTML="";
+      latest.forEach(n=>{
+        const div = document.createElement("div");
+        div.className="notice";
+        div.innerHTML = `
+          <span>📣</span>
+          <div>
+            <div class="title">${n.title}</div>
+            <div class="summary">${aiSummarize(n.body)}</div>
+            <div class="meta">Posted ${fmtDate(n.date)}</div>
+          </div>
+        `;
+        nEl.appendChild(div);
+      });
+
+      // Smart reminders
+      const remEl = document.getElementById("reminders");
+      const urgent = pend.filter(a=>isOverdue(a.due) || daysDiff(a.due)<=2);
+      remEl.innerHTML = urgent.length
+        ? urgent.map(a=>`<div class="notice"><span>🔔</span><div><div class="title">${a.title}</div><div class="summary">Due ${fmtDate(a.due)} • Suggested: 45 mins today</div></div></div>`).join("")
+        : `<div class="notice"><span>✅</span><div><div class="title">All clear</div><div class="summary">No urgent items within 48 hours.</div></div></div>`;
+    }
+
+    // ----- Assignment completion toggle -----
+    document.addEventListener("click",(e)=>{
+      if(e.target.classList.contains("chk")){
+        const id = e.target.dataset.id;
+        if(state.completed.includes(id)){
+          state.completed = state.completed.filter(x=>x!==id);
+          e.target.classList.remove("done"); e.target.textContent="";
+        }else{
+          state.completed.push(id);
+          e.target.classList.add("done"); e.target.textContent="✓";
+        }
+        saveProgress();
+        renderDashboard();
+        renderSubjects();
+      }
+    });
+
+    // ----- Subjects rendering -----
+    function renderSubjects(){
+      const sc = document.getElementById("subjectsContainer");
+      sc.innerHTML="";
+      // Populate filter dropdown once
+      const sf = document.getElementById("subjectFilter");
+      if(sf.options.length===1){
+        subjects.forEach(s=>{
+          const opt = document.createElement("option"); opt.value=s.code; opt.textContent=`${s.code} — ${s.name}`;
+          sf.appendChild(opt);
+        });
+      }
+      const filteredAssignments = assignments.filter(a=>{
+        const matchSubject = state.subjectFilter==="all" ? true : a.subject===state.subjectFilter;
+        const matchDate = state.dateFilter==="all" ? true
+          : state.dateFilter==="today" ? (new Date(a.due).toDateString()===today.toDateString())
+          : state.dateFilter==="week" ? inNext7Days(a.due)
+          : state.dateFilter==="overdue" ? isOverdue(a.due) : true;
+        const matchQuery = state.query? (a.title.toLowerCase().includes(state.query)||a.subject.toLowerCase().includes(state.query)) : true;
+        return matchSubject && matchDate && matchQuery;
+      });
+
+      subjects.forEach(s=>{
+        const container = document.createElement("div");
+        container.className="card";
+        const sItems = filteredAssignments.filter(a=>a.subject===s.code);
+        const subjHomework = (homeworkNotes[s.code]||[]);
+        const completedCount = sItems.filter(a=>state.completed.includes(a.id)).length;
+        const pct = sItems.length? Math.round(completedCount/sItems.length*100) : 0;
+
+        container.innerHTML = `
+          <h3>${s.code} — ${s.name}</h3>
+          <div class="sub">Assignments & materials</div>
+          <div class="progress"><div class="bar" style="width:${pct}%"></div></div>
+          <div class="list">
+            ${sItems.length? sItems.map(a=>`
+              <div class="item">
+                <div class="chk ${state.completed.includes(a.id)?'done':''}" data-id="${a.id}" title="Mark complete">${state.completed.includes(a.id)?'✓':''}</div>
+                <div>
+                  <div class="title">${a.title}</div>
+                  <div class="meta">${a.type} • Due ${fmtDate(a.due)}</div>
+                  <div class="meta">AI tags: ${aiAutoTag(a).join(", ")}</div>
+                </div>
+                <div class="actions">
+                  <span class="badge ${isOverdue(a.due)?'danger':inNext7Days(a.due)?'warn':'ok'}">${isOverdue(a.due)?'Overdue':inNext7Days(a.due)?'Due soon':'On track'}</span>
+                </div>
+              </div>
+            `).join("") : `<div class="notice"><span>📂</span><div><div class="title">No assignments</div><div class="summary">Try another filter or subject.</div></div></div>`}
+          </div>
+          <div style="margin-top:10px" class="list">
+            ${subjHomework.map(h=>`
+              <div class="item">
+                <span>📘</span>
+                <div>
+                  <div class="title">${h.kind}: ${h.title}</div>
+                  <div class="meta">AI tag: ${h.aiTag.join(", ")}</div>
+                </div>
+                <a class="badge ok" href="${h.url}">Open</a>
+              </div>
+            `).join("")}
+          </div>
+        `;
+        sc.appendChild(container);
+      });
+    }
+    document.getElementById("subjectFilter").addEventListener("change",(e)=>{
+      state.subjectFilter = e.target.value; renderSubjects();
+    });
+    document.getElementById("dateFilter").addEventListener("change",(e)=>{
+      state.dateFilter = e.target.value; renderSubjects();
+    });
+    document.getElementById("searchInput").addEventListener("input",(e)=>{
+      state.query = e.target.value.trim().toLowerCase(); renderSubjects();
+    });
+
+    // ----- Notice board -----
+    function renderNotices(){
+      const pin2 = notices.find(n=>n.id==="n2");
+      document.getElementById("pinnedSummary2").textContent = aiSummarize(pin2.body);
+      const nl = document.getElementById("noticesList");
+      nl.innerHTML="";
+      notices.sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(n=>{
+        const div = document.createElement("div");
+        div.className="notice";
+        div.innerHTML = `
+          <span>${n.pinned?'📌':'📣'}</span>
+          <div>
+            <div class="title">${n.title}</div>
+            <div class="summary">${aiSummarize(n.body)}</div>
+            <div class="meta">Posted ${fmtDate(n.date)}</div>
+          </div>
+        `;
+        nl.appendChild(div);
+      });
+    }
+
+    // ----- Faculty directory -----
+    function renderFaculty(){
+      const grid = document.getElementById("facultyGrid");
+      grid.innerHTML="";
+      faculty.forEach(f=>{
+        const div = document.createElement("div");
+        div.className="fac-card";
+        div.innerHTML = `
+          <div class="avatar">${f.name.split(" ")[1]?.[0]||f.name[0]}</div>
+          <div>
+            <div class="title" style="font-weight:700">${f.name}</div>
+            <div class="meta">${f.subject}</div>
+            <div class="meta">${f.email} • ${f.phone}</div>
+          </div>
+          <div><a class="btn secondary" href="mailto:${f.email}">Email</a></div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    // ----- Calendar -----
+    let calCursor = new Date(today);
+    calCursor.setDate(1);
+    function renderCalendar(){
+      const monthName = calCursor.toLocaleDateString(undefined,{month:"long"});
+      const yearNum = calCursor.getFullYear();
+      document.getElementById("calMonth").textContent = monthName;
+      document.getElementById("calYear").textContent = yearNum;
+      const grid = document.getElementById("calendarGrid");
+      grid.innerHTML="";
+      const firstDay = new Date(calCursor);
+      firstDay.setDate(1);
+      const startIdx = firstDay.getDay(); // 0 Sun..6 Sat
+      const daysInMonth = new Date(yearNum, calCursor.getMonth()+1, 0).getDate();
+
+      // Leading empty cells
+      for(let i=0;i<startIdx;i++){
+        const d = document.createElement("div"); d.className="cal-day empty"; grid.appendChild(d);
+      }
+      // Days
+      for(let day=1; day<=daysInMonth; day++){
+        const d = new Date(yearNum, calCursor.getMonth(), day);
+        const iso = d.toISOString().slice(0,10);
+        const ev = calendarEvents.filter(e=>e.date===iso);
+        const cell = document.createElement("div");
+        cell.className="cal-day";
+        cell.innerHTML = `<div class="num">${day}</div>${ev.map(e=>`<div class="tag badge ${e.kind==='holiday'?'ok':e.kind==='exam'?'warn':'danger'}">${icon(e.kind)} ${e.label}</div>`).join("")}`;
+        grid.appendChild(cell);
+      }
+    }
+    document.getElementById("prevMonth").addEventListener("click",()=>{
+      calCursor.setMonth(calCursor.getMonth()-1); renderCalendar();
+    });
+    document.getElementById("nextMonth").addEventListener("click",()=>{
+      calCursor.setMonth(calCursor.getMonth()+1); renderCalendar();
+    });
+
+    // ----- Chatbot -----
+    function chatSay(who,text){
+      const log = document.getElementById("chatLog");
+      const msg = document.createElement("div"); msg.className="msg";
+      msg.innerHTML = `<div class="who">${who}</div><div class="text">${text}</div>`;
+      log.appendChild(msg);
+      log.scrollTop = log.scrollHeight;
+    }
+    function nextDeadline(){
+      const pend = assignments.filter(a=>!state.completed.includes(a.id));
+      const soon = pend.sort((a,b)=>new Date(a.due)-new Date(b.due))[0];
+      return soon ? `${soon.title} (${soon.subject}) due ${fmtDate(soon.due)}` : "No pending deadlines.";
+    }
+    function pendingList(){
+      const pend = assignments.filter(a=>!state.completed.includes(a.id)).map(a=>`${a.title} — ${fmtDate(a.due)}`).join("<br>");
+      return pend || "Nothing pending. Great job!";
+    }
+    function chatbotAnswer(q){
+      const qq = q.toLowerCase();
+      if(qq.includes("pending") && qq.includes("homework")) return pendingList();
+      if(qq.includes("next deadline") || qq.includes("upcoming")) return nextDeadline();
+      if(qq.includes("overdue")) {
+        const od = assignments.filter(a=>!state.completed.includes(a.id) && isOverdue(a.due)).map(a=>`${a.title} — ${fmtDate(a.due)}`).join("<br>");
+        return od || "No overdue items.";
+      }
+      if(qq.includes("progress")){
+        const comp = assignments.filter(a=>state.completed.includes(a.id)).length;
+        const pct = Math.round((comp/assignments.length)*100);
+        return `You’re ${pct}% through your assignments.`;
+      }
+      if(qq.includes("filter")) return "Use the Subjects tab: choose a subject and date filter, or search by keywords.";
+      return "Try: “What homework is pending?”, “What is the next deadline?”, “Show overdue items”, or “My progress percentage”.";
+    }
+    document.getElementById("sendChat").addEventListener("click",()=>{
+      const q = document.getElementById("chatInput").value.trim();
+      if(!q) return;
+      chatSay("You", q);
+      setTimeout(()=> chatSay("AI", chatbotAnswer(q)), 300);
+      document.getElementById("chatInput").value="";
+    });
+
+    // ----- Init -----
+    function init(){
+      renderDashboard();
+      renderSubjects();
+      renderNotices();
+      renderFaculty();
+      renderCalendar();
+      // Seed dashboard pinned summary
+      const pin = notices.find(n=>n.pinned);
+      if(pin){
+        document.getElementById("pinnedNoticeSummary").textContent = aiSummarize(pin.body);
+      }
+    }
+    init();
+  </script>
+</body>
+</html>
